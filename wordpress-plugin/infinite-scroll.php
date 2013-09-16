@@ -2,7 +2,7 @@
 /*
 Plugin Name: Infinite Scroll
 Description: Automatically loads the next page of posts into the bottom of the initial page.
-Version: 2.6.1
+Version: 2.6.2
 Author: Beaver6813, dirkhaim, Paul Irish, benbalter, Glenn Nelson
 Author URI:
 License: GPL3
@@ -28,7 +28,7 @@ Domain Path: /languages/
  *
  *  @copyright 2008-2012
  *  @license GPL v3
- *  @version 2.6.1
+ *  @version 2.6.2
  *  @package Infinite Scroll
  *  @author Beaver6813, dirkhaim, Paul Irish, Benjamin J. Balter, Glenn Nelson
  */
@@ -133,7 +133,7 @@ class Infinite_Scroll {
 		//sanity check
 		if ( !array_key_exists( $options['behavior'], $this->behaviors ) )
 		  return _doing_it_wrong( 'Infinite Scroll behavior', "Behavior {$options['behavior']} not found", $this->version );
-
+		
 		$src = 'behaviors/' . $this->behaviors[ $options['behavior'] ]['src'] . '.js';
 		wp_enqueue_script( $this->slug . "-behavior", plugins_url( $src, __FILE__ ), array( "jquery", $this->slug ), $this->version, true );
 
@@ -304,8 +304,11 @@ class Infinite_Scroll {
 	 */
 	function shouldLoadJavascript() {
 		// Don't need to load the plugin on single pages
-		$load = is_single() ? false : true;
-		return apply_filters( 'infinite_scroll_load_javascript', $load );
+		if (is_singular()) {
+			return false;
+		}
+
+		return true;
 	}
 }
 

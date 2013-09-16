@@ -4,7 +4,7 @@ Donate link: http://www.infinite-scroll.com
 Tags: ajax, pagination, scrolling, scroll, endless, reading
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 
 Automatically append the next page of posts (via AJAX) to your page when a user scrolls to the bottom. 
 
@@ -194,8 +194,7 @@ Add a filter to `infinite_scroll_options` and adds additional options to the opt
 
 = Is the plugin available in my language? =
 
-* Currently the plugin offers an English and German interface.
-* Contribute Translations at [https://translate.foe-services.de/projects/infinite-scroll](https://translate.foe-services.de/projects/infinite-scroll)
+If you enjoy the plugin and are interested in contributing a translation (it's super easy), please take a look at the [Translating WordPress](http://codex.wordpress.org/Translating_WordPress) page. 
 
 = Is it SEO-Friendly? =
 Yes all enhancements are made via javascript only, so search spiders see no difference.
