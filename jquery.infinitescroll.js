@@ -377,13 +377,14 @@
 
             // smooth scroll to ease in the new content
             if (opts.animate) {
-                var scrollTo = $(window).scrollTop() + $(opts.loading.msg).height() + opts.extraScrollPx + 'px';
-                $('html,body').animate({ scrollTop: scrollTo }, 800, function () { opts.state.isDuringAjax = false; });
+                var scrollTo = $(window).scrollTop() + $(opts.loading.msg).height() + opts.extraScrollPx + 'px', self = this;
+                $('html,body').animate({ scrollTop: scrollTo }, 800, function () { opts.state.isDuringAjax = false; self._debug('isDuringAjax set to false'); });
             }
 
             if (!opts.animate) {
 				// once the call is done, we can allow it again.
 				opts.state.isDuringAjax = false;
+                this._debug('isDuringAjax set to false');
 			}
 
             callback(this, data, url);
@@ -643,6 +644,7 @@
 
             // we dont want to fire the ajax multiple times
             opts.state.isDuringAjax = true;
+            this._debug('isDuringAjax set to true');
 
             opts.loading.start.call($(opts.contentSelector)[0],opts);
         },

@@ -42,6 +42,7 @@
             isDestroyed: false,
             isDone: false, // For when it goes all the way through the archive.
             isPaused: false,
+            isBeyondMaxPage: false,
             currPage: 1
         },
         debug: false,
@@ -143,6 +144,7 @@
             // computed as: height of the document + top offset of container - top offset of nav link
             if(opts.pixelsFromNavToBottom === undefined) {
 				opts.pixelsFromNavToBottom = $(document).height() - $(opts.navSelector).offset().top;
+				this._debug("pixelsFromNavToBottom: " + opts.pixelsFromNavToBottom);
 			}
 
 			var self = this;
@@ -159,7 +161,8 @@
 
             // determine loading.finished actions
             opts.loading.finished = opts.loading.finished || function() {
-                opts.loading.msg.fadeOut(opts.loading.speed);
+                if (!opts.state.isBeyondMaxPage)
+                    opts.loading.msg.fadeOut(opts.loading.speed);
             };
 
 			// callback loading
@@ -200,11 +203,10 @@
 
 		_prefill: function infscr_prefill() {
 			var instance = this;
-			var $document = $(document);
 			var $window = $(window);
 
 			function needsPrefill() {
-				return ($document.height() <= $window.height());
+				return (instance.options.contentSelector.height() <= $window.height());
 			}
 
 			this._prefill = function() {
@@ -309,13 +311,14 @@
 
             this._debug('Error', xhr);
 
-            if (xhr === 'end') {
+            if (xhr === 'end' || opts.state.isBeyondMaxPage) {
                 this._showdonemsg();
             }
 
             opts.state.isDone = true;
             opts.state.currPage = 1; // if you need to go back to this instance
             opts.state.isPaused = false;
+            opts.state.isBeyondMaxPage = false;
             this._binding('unbind');
 
         },
@@ -374,13 +377,14 @@
 
             // smooth scroll to ease in the new content
             if (opts.animate) {
-                var scrollTo = $(window).scrollTop() + $('#infscr-loading').height() + opts.extraScrollPx + 'px';
-                $('html,body').animate({ scrollTop: scrollTo }, 800, function () { opts.state.isDuringAjax = false; });
+                var scrollTo = $(window).scrollTop() + $(opts.loading.msg).height() + opts.extraScrollPx + 'px', self = this;
+                $('html,body').animate({ scrollTop: scrollTo }, 800, function () { opts.state.isDuringAjax = false; self._debug('isDuringAjax set to false'); });
             }
 
             if (!opts.animate) {
 				// once the call is done, we can allow it again.
 				opts.state.isDuringAjax = false;
+                this._debug('isDuringAjax set to false');
 			}
 
             callback(this, data, url);
@@ -535,12 +539,13 @@
 
             // Manually control maximum page 
             if ( opts.maxPage != undefined && opts.state.currPage > opts.maxPage ){
+                opts.state.isBeyondMaxPage = true;
                 this.destroy();
                 return;
             }
 
 			// if we're dealing with a table we can't use DIVs
-			box = $(opts.contentSelector).is('table') ? $('<tbody/>') : $('<div/>');
+			box = $(opts.contentSelector).is('table, tbody') ? $('<tbody/>') : $('<div/>');
 
 			desturl = (typeof path === 'function') ? path(opts.state.currPage) : path.join(opts.state.currPage);
 			instance._debug('heading into ajax', desturl);
@@ -639,6 +644,7 @@
 
             // we dont want to fire the ajax multiple times
             opts.state.isDuringAjax = true;
+            this._debug('isDuringAjax set to true');
 
             opts.loading.start.call($(opts.contentSelector)[0],opts);
         },
