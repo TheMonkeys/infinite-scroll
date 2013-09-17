@@ -480,9 +480,11 @@
             opts.loading.msg
             .find('img')
             .hide()
-            .parent()
+            .end()
             .find('div').html(opts.loading.finishedMsg).animate({ opacity: 1 }, 2000, function () {
-                $(this).parent().fadeOut(opts.loading.speed);
+                $(this).parent().fadeOut(opts.loading.speed, function() {
+                    $(this).find('img').show().end().find('div').html(opts.loading.msgText);
+                });
             });
 
             // user provided callback when done    

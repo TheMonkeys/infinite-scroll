@@ -14,3 +14,7 @@ cp jquery.infinitescroll.min.js ./wordpress-plugin/js/front-end/jquery.infinites
 
 cp ./behaviors/* ./wordpress-plugin/behaviors/
 
+# Copy into monkeys website
+cp jquery.infinitescroll.js ../3dm/3DM--The-Monkeys-CMS/build/public/wp-content/plugins/infinite-scroll/js/front-end/jquery.infinitescroll.dev.js
+cp jquery.infinitescroll.min.js ../3dm/3DM--The-Monkeys-CMS/build/public/wp-content/plugins/infinite-scroll/js/front-end/jquery.infinitescroll.js
+cp ./behaviors/* ../3dm/3DM--The-Monkeys-CMS/build/public/wp-content/plugins/infinite-scroll/behaviors/
